@@ -1,5 +1,5 @@
 var tasks = [
-    {name: 'Recoger setas en el campo', completed: true},
+    {name: 'Recoger setas en el campo', completed: false},
     {name: 'Comprar pilas', completed: true},
     {name: 'Poner una lavadora de blancos', completed: true},
     {name: 'Aprender cómo se realizan las peticiones al servidor en JavaScript', completed: false}
@@ -7,31 +7,31 @@ var tasks = [
 
 
 function pintarListaTares () {
-    var html_task = "";
+    var html_task = "", cont_completa = 0, cont_por_realizar = 0;
     tasks.forEach( (task, index) =>{
-        if(task.completed)
-            html_task += `<li class = "completa">${task.name}</li>
-                        <input type = "checkbox" checked disabled index = ${index}>  `;
-        else
-            html_task += `<li>${task.name}</li>
-                        <input type = "checkbox" index = ${index} class = "tarea"> `;
+        task.completed?cont_completa++:cont_por_realizar++;
+        html_task += `<li class = "${task.completed?"completa":""}">${task.name}</li>
+                        <input class = "tarea" type = "checkbox" ${task.completed?"checked":""} index = ${index}>  `;
     }); 
-
-    document.querySelector("#lista_tares").innerHTML = html_task;
+    $("#completadas span").html(cont_completa);
+    $("#por_realizar span").html(cont_por_realizar)
+    $("#lista_tares").html(html_task);
     
-    if(document.querySelector('.tarea') != null){
-        document.querySelector('.tarea').addEventListener('click', (e) => {
-            if(e.target.checked){
-                var idBuscar = e.target.getAttribute('index') ;
-                tasks = tasks.map( (task, index) => {
-                    if(idBuscar ==  index)
-                        task.completed = true;
-                    return task;
-                });
-                pintarListaTares();
-            }
-        });
-    }
 }
 
-pintarListaTares () ;
+
+
+$(document).ready( (e) => {
+	
+    $(document).on('click', '.tarea', (e) => {
+        tasks[e.target.getAttribute('index')].completed = e.target.checked?true:false;
+        pintarListaTares();
+    })
+	
+    $('#hola').click((e) => {
+        alert("Diste click");
+    });
+    
+    
+    pintarListaTares ();
+});
